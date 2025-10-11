@@ -1,34 +1,21 @@
-const express = require('express');
+const express = require("express");
 
 const app = express();
+const {auth,isadmin }= require('../middlwares/auth');
+const {createUser,getUser}= require('../controllers/user')
 
-// routes ,request handlers
+let data = [
+  {
+    name: "prudhvi",
+    gender: "male",
+  },
+];
 
+app.post('/admin/user/:sn/:role',auth,isadmin,createUser)
 
-
-
-
-app.use('/user/:abc/:xyz',(req,res)=>{
-    console.log('normal params')
-    const {abc}= req.params;
-    console.log(req.params)
-    //logic
-    res.send(abc)
-})
-
-
-app.get('/product',(req,res)=>{
-    console.log(req.query);
-    res.send('query params')
-})
+app.get('/admin/user/:sn/:role',auth,isadmin,getUser)
 
 
-
-
-
-
-
-
-app.listen(1111,()=>{
-    console.log(`server is running on port 4321`)
+app.listen(1111, () => {
+  console.log(`server is running on port 1111`);
 });
