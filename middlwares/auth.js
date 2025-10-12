@@ -1,8 +1,9 @@
 
 // middlware
 const auth = (req,res,next)=>{
-    console.log('in auth middleware')
-    const {sn}= req.params;
+    
+    const {sn}= req.query;
+    console.log(req.query);
     if(sn!=123){
         res.send('unauthorrize')
     }
@@ -12,8 +13,8 @@ const auth = (req,res,next)=>{
 }
 
 const isadmin= (req,res,next)=>{
-    console.log('in isadmin midllware')
-    const {role}= req.params;
+    console.log(req.query);
+    const {role}= req.query;
     if(role!='admin'){
         res.send('not admin')
     }

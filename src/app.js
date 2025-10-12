@@ -11,11 +11,12 @@ let data = [
   },
 ];
 
+
 app.use('/admin',auth,isadmin)
 
-app.post('/admin/user/:sn/:role',createUser)
+app.use('/admin/create',createUser)
 
-app.get('/admin/user/:sn/:role',getUser)
+app.use('/admin/read',getUser)
 
 
 app.listen(1111, () => {
