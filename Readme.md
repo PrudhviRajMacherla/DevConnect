@@ -9,3 +9,8 @@
 -request handlers
 -middlewares
 -errhandlers
+-http methods
+
+# Day-3
+- Schema creation
+- model creation

@@ -1,24 +1,37 @@
 const express = require("express");
-
 const app = express();
-const {auth,isadmin }= require('../middlwares/auth');
-const {createUser,getUser}= require('../controllers/user')
 
-let data = [
-  {
-    name: "prudhvi",
-    gender: "male",
-  },
-];
+const { connectDb } = require("../utils/database");
+const User = require("../models/user");
 
+app.use(express.json());
 
-app.use('/admin',auth,isadmin)
+app.post("/signup", async (req, res) => {
+  const data = req.body;
 
-app.use('/admin/create',createUser)
+  const { firstName, lastName, AGE } = req.body;
 
-app.use('/admin/read',getUser)
+  const user = new User({
+    firstName: firstName,
+    lastName: lastName,
+    age: AGE,
+  });
 
+  await user.save();
 
-app.listen(1111, () => {
-  console.log(`server is running on port 1111`);
+  res.send(user);
+});
+
+app.get("/user", async (req, res) => {
+  try {
+    const usersData = await User.find({ firstName: "prudhvi",lastName:"raj"});
+    res.send(usersData);
+  } catch (err) {
+    res.status(500).send("something went wrong");
+  }
+});
+
+connectDb();
+app.listen(4321, () => {
+  console.log("Server is running......");
 });
