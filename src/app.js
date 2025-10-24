@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const { validateSignup } = require("../utils/validateSignup");
 const { connectDb } = require("../utils/database");
 const User = require("../models/user");
+const authUser = require("../middlware/auth");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -39,7 +40,6 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   try {
-    console.log("line 46");
     const { email, password } = req.body;
     const userFound = await User.findOne({ email: email });
 
@@ -55,13 +55,12 @@ app.post("/login", async (req, res) => {
       };
 
       const token = await jwt.sign(payload, "DevConnect@123", {
-        expiresIn: "5m"
+        expiresIn: "1d",
       });
 
-      res.cookie("access_token", token);
+      res.cookie("token", token);
       res.send("token sent sucessfully after login");
     } else {
-      console.log("line 65");
       throw new Error("Invalid Credentials....");
     }
   } catch (error) {
@@ -69,27 +68,21 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", async (req, res) => {
+app.post("/logout", async (req, res) => {
+
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+  }).send('logout successfull');
+});
+
+
+app.get("/profile", authUser, async (req, res) => {
   try {
-    const { access_token } = req.cookies;
-    console.log("line 93", access_token);
-
-    // const decoded = await jwt.verify(access_token,"DevConnect@123");
-    // console.log(decoded);
-
-    const decoded = jwt.verify(access_token, "DevConnect@123");
-    console.log("✅ Token verified:", decoded);
-
-    // If token is valid, send user data
-    const {_id}= decoded;
-    const getUserData = await User.findById(_id);
     res.status(200).send({
-      user: getUserData, // or fetch user from DB using decoded.id
+      user: req.user, // or fetch user from DB using decoded.id
     });
-  } catch (err) 
-  {
+  } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
-    
   }
 });
 
