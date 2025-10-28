@@ -14,17 +14,13 @@ profileRouter
 
 connectionRequestRouter
 - POST /request/send/:status/:toUserId
+- POST /request/review/:status/:requestId
 
 
 
-
-- POST /request/review/accepted/:requestId
-- POST /request/review/rejected/:requestId
-
-
+- GET /user/received/requests
 
 - GET /user/connections
-- GET /user/received
 
 
 - GET /user/feed
