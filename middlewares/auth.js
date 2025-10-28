@@ -4,6 +4,9 @@ const User = require('../models/user');
 const authUser = async(req,res,next)=>{
     try{
         const { token } = req.cookies;
+        if(!token){
+            throw new Error("Token Not Found")
+        }
         const decodedObj =await jwt.verify(token, "DevConnect@123");
         const {_id}= decodedObj;
         const userFound = await User.findById(_id);

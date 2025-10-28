@@ -10,16 +10,22 @@ profileRouter
 - PATCH /profile/edit
 - PATCH /profile/password
 
+
+
 connectionRequestRouter
-- POST /request/send/:interested/:userId
-- POST /request/send/:ignored/:userId
+- POST /request/send/:status/:toUserId
+
 
 
 
 - POST /request/review/accepted/:requestId
 - POST /request/review/rejected/:requestId
 
+
+
 - GET /user/connections
 - GET /user/received
+
+
 - GET /user/feed
 

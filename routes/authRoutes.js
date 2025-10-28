@@ -1,6 +1,9 @@
 const express = require('express');
 const authRouter = express.Router();
 const { validateSignup } = require('../utils/validateSignup');
+const User = require('../models/user');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 authRouter.post("/register", async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -29,6 +32,7 @@ authRouter.post("/register", async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
   try {
+    console.log('line 34 authRoutes')
     const { email, password } = req.body;
     const userFound = await User.findOne({ email: email });
 
