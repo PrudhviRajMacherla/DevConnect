@@ -6,7 +6,9 @@ const mongouri =
 const connectDb = async () => {
   await mongoose.connect(mongouri)
     .then(() => console.log("connected to database"))
-    .catch((err) => console.log("unable to connect to database"+err));
+    .catch((err) =>{ 
+      console.log("unable to connect to database"+err)});
+      // process.exit(1);
 };
 
 module.exports ={connectDb};
