@@ -27,15 +27,6 @@ const allUserConnections = async (req, res) => {
       .populate("fromUserId", "firstName lastName")
       .populate("toUserId", "firstName lastName");
 
-    // let myconnections = [];
-    // connections.forEach((connection) => {
-    //   if (connection.toUserId.equals(loggedInUser._id)) {
-    //     myconnections.push(connection.fromUserId);
-    //   } else {
-    //     myconnections.push(connection.toUserId);
-    //   }
-    // });
-
     const myconnections = connections.map((connection) =>
       connection.toUserId.equals(loggedInUser._id)
         ? connection.fromUserId
