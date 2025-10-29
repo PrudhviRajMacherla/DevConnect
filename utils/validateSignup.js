@@ -3,9 +3,6 @@ function validateSignup(req) {
   const { firstName, lastName, email, password } = req.body;
   
   
-
-  // checking email is true or not
-  // console.log(firstName)
   if( !firstName ||  firstName.trim()==="" || firstName.trim().length<4){
     throw new Error("Invalid FirstName");
 
