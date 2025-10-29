@@ -1,5 +1,5 @@
 const Connection = require("../models/connection");
-const User = require('../models/user');
+const User = require("../models/user");
 
 const allReceivedConnections = async (req, res) => {
   try {
@@ -15,7 +15,7 @@ const allReceivedConnections = async (req, res) => {
   }
 };
 
-const allUserConnections =  async (req, res) => {
+const allUserConnections = async (req, res) => {
   try {
     let loggedInUser = req.user;
     let connections = await Connection.find({
@@ -27,16 +27,20 @@ const allUserConnections =  async (req, res) => {
       .populate("fromUserId", "firstName lastName")
       .populate("toUserId", "firstName lastName");
 
-    let myconnections = [];
-    connections.forEach((connection) => {
-      if (connection.toUserId.equals(loggedInUser._id)) {
-        console.log(connection.fromUserId);
-        myconnections.push(connection.fromUserId);
-      } else {
-        myconnections.push(connection.toUserId);
-      }
+    // let myconnections = [];
+    // connections.forEach((connection) => {
+    //   if (connection.toUserId.equals(loggedInUser._id)) {
+    //     myconnections.push(connection.fromUserId);
+    //   } else {
+    //     myconnections.push(connection.toUserId);
+    //   }
+    // });
 
-    });
+    const myconnections = connections.map((connection) =>
+      connection.toUserId.equals(loggedInUser._id)
+        ? connection.fromUserId
+        : connection.toUserId
+    );
 
     return res.send(myconnections);
   } catch (err) {
@@ -48,15 +52,12 @@ const userFeed = async (req, res) => {
   try {
     let page = req.query.page || 1;
     let limit = req.query.limit || 5;
-    let skip = (page-1)*limit;
+    let skip = (page - 1) * limit;
     const loggedInUser = req.user;
 
     // find all connections (any relation with logged-in user)
     const connections = await Connection.find({
-      $or: [
-        { fromUserId: loggedInUser._id },
-        { toUserId: loggedInUser._id },
-      ],
+      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
     });
 
     // collect connected user IDs (including self)
@@ -72,10 +73,13 @@ const userFeed = async (req, res) => {
     // now get users who are NOT in that set
     const feed = await User.find({
       _id: { $nin: Array.from(hiddenUserFeed) },
-    }).select("firstName").skip(skip).limit(limit);
+    })
+      .select("firstName")
+      .skip(skip)
+      .limit(limit);
 
     return res.status(200).json({
-      data:feed
+      data: feed,
     });
   } catch (err) {
     return res.status(500).json({
@@ -84,5 +88,4 @@ const userFeed = async (req, res) => {
   }
 };
 
-
-module.exports = {allReceivedConnections,allUserConnections,userFeed};
+module.exports = { allReceivedConnections, allUserConnections, userFeed };
